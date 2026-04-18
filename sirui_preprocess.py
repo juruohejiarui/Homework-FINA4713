@@ -32,12 +32,12 @@ def parse_args() -> PreprocessConfig:
     parser.add_argument(
         "--input_path",
         type=str,
-        default="f:/Files/code/2026_spring_term/FINA4713/Project/data/jkp_data_slim.parquet",
+        default="../jkp_data_slim.parquet",
     )
     parser.add_argument(
         "--output_root",
         type=str,
-        default="f:/Files/code/2026_spring_term/FINA4713/Project/data",
+        default="../split_data",
     )
     parser.add_argument("--target_col", type=str, default="ret_exc_lead1m")
     parser.add_argument("--date_col", type=str, default="eom")
@@ -69,6 +69,9 @@ def temporal_split(df: pd.DataFrame, date_col: str) -> tuple[pd.DataFrame, pd.Da
 def select_predictors(df: pd.DataFrame, target_col: str, date_col: str, id_col: str) -> list[str]:
     excluded = {target_col, date_col, id_col}
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    excluded_cols = df.select_dtypes(exclude=[np.number]).columns.tolist()
+    print(f"Numeric columns: {len(numeric_cols)}")
+    print(f"Excluded columns (non-numeric): {excluded_cols}")
     predictors = [col for col in numeric_cols if col not in excluded]
     if not predictors:
         raise ValueError("No numeric predictors available after exclusion.")

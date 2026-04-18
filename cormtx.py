@@ -1,26 +1,10 @@
-import pandas as pd
-import argparse
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from tqdm import tqdm
 from multiprocessing import shared_memory, get_context
 from concurrent.futures import ProcessPoolExecutor
-
-def load_data(data_path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    df = pd.read_parquet(data_path)
-    
-    # split data set
-    train = df[(df['eom'] >= '2005-01-01') & (df['eom'] <= '2015-12-31')]
-    val = df[(df['eom'] >= '2016-01-01') & (df['eom'] <= '2018-12-31')]
-    test = df[(df['eom'] >= '2019-01-01') & (df['eom'] <= '2024-12-31')]
-
-    train = train[train['ret_exc_lead1m'].notna()].copy()
-    val = val[val['ret_exc_lead1m'].notna()].copy()
-    test = test[test['ret_exc_lead1m'].notna()].copy()
-
-    return (train, val, test)
-
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # ---------------------------
 # 1) 预处理：构造共享内存矩阵
@@ -249,7 +233,7 @@ def mixed_association_matrix_parallel(df, datetime_cols=None, categorical_cols=N
         shm.close()
         shm.unlink()
 
-def plot_clustermap(matrix, figsize=(15, 15), use_abs_for_clustering=True, cmap="coolwarm"):
+def plot_clustermap(matrix, file_name : str, figsize=(15, 15), use_abs_for_clustering=True, cmap="coolwarm"):
     m = matrix.copy()
 
     if use_abs_for_clustering:
@@ -262,6 +246,7 @@ def plot_clustermap(matrix, figsize=(15, 15), use_abs_for_clustering=True, cmap=
     # clustermap 会自动对行列做聚类
     g = sns.clustermap(
         cluster_data, 
+        metric="correlation",
         row_cluster=True,
         col_cluster=True,
         row_linkage=None,
@@ -269,24 +254,8 @@ def plot_clustermap(matrix, figsize=(15, 15), use_abs_for_clustering=True, cmap=
         cmap=cmap,
         center=0 if (m.values.min() < 0) else None,
         figsize=figsize,
-        linewidths=0.2,
+        linewidths=0.1,
     )
-    plt.savefig("./cor_matrix.png")
+    plt.savefig(f"./cor_matrix_{file_name}.png")
 
-# load data
-def main(data_path) :
-    train_df, val_df, test_df = load_data(data_path)
-    
-    print(f"train: {len(train_df)} rows")
-    print(f"val:   {len(val_df)} rows")
-    print(f"test:  {len(test_df)} rows")
-
-    mtx = mixed_association_matrix_parallel(train_df.drop(columns=['id']))
-
-    plot_clustermap(mtx)
-
-if __name__ == "__main__" :
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--data_path", default="../jkp_data.parquet")
-    args = parser.parse_args()
-    main(args.data_path)
+    return g
