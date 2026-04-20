@@ -196,7 +196,7 @@ def _pair_task(pair):
 # 4) 主函数：8 进程计算矩阵
 # ---------------------------
 
-def mixed_association_matrix_parallel(df, datetime_cols=None, categorical_cols=None, n_jobs=8):
+def association_matrix(df, datetime_cols=None, categorical_cols=None, n_jobs=8):
     """
     返回一个对称矩阵：
     - 数值/日期 vs 数值/日期：Pearson
@@ -222,10 +222,12 @@ def mixed_association_matrix_parallel(df, datetime_cols=None, categorical_cols=N
             initializer=_worker_init,
             initargs=(shm.name, shape, kinds, n_categories),
         ) as ex:
+            pbar = tqdm(total=len(pairs), desc="Computing associations")
             # chunksize 可以减少调度开销
-            for i, j, v in tqdm(ex.map(_pair_task, pairs, chunksize=16)):
+            for i, j, v in ex.map(_pair_task, pairs, chunksize=16):
                 mat.iat[i, j] = v
                 mat.iat[j, i] = v
+                pbar.update(1)
 
         return mat
 
@@ -233,7 +235,7 @@ def mixed_association_matrix_parallel(df, datetime_cols=None, categorical_cols=N
         shm.close()
         shm.unlink()
 
-def plot_clustermap(matrix, file_name : str, figsize=(15, 15), use_abs_for_clustering=True, cmap="coolwarm"):
+def plot_clustermap(matrix, file_name : str, figsize=(15, 15), use_abs_for_clustering=True, cmap="coolwarm") :
     m = matrix.copy()
 
     if use_abs_for_clustering:

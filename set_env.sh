@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export OPENBLAS_NUM_THREADS=8
+export OMP_NUM_THREADS=8
+export MKL_NUM_THREADS=8
+python ./lasso.py

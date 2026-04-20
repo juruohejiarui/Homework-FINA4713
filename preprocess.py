@@ -3,7 +3,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Self
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import numpy as np
 import pandas as pd
 
@@ -83,12 +84,57 @@ def parse_args() -> PreprocessConfig:
         winsor_upper_q=args.winsor_upper_q,
     )
 
-def _split(df: pd.DataFrame, config: PreprocessConfig):
+def split(df: pd.DataFrame, config: PreprocessConfig):
     df[config.date_col] = pd.to_datetime(df[config.date_col])
     train_df = df[df[config.date_col] <= config.train_end]
     valid_df = df[(df[config.date_col] > config.train_end) & (df[config.date_col] <= config.valid_end)]
     test_df = df[df[config.date_col] > config.valid_end]
     return train_df, valid_df, test_df
+
+def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, config : PreprocessConfig,
+    include : list[str] | None = None,
+    exclude : list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
+    if include is None :
+        if exclude is None :
+            include = [col for col in train.columns if col not in [config.id_col, config.date_col, config.target_col]]
+        else :
+            include = [col for col in train.columns if col not in [*exclude, config.id_col, config.date_col, config.target_col]]
+
+    imputer = SimpleImputer(strategy='median')
+    scaler = StandardScaler()
+
+    imputer.fit(train[include])
+    
+    train[include] = imputer.transform(train[include])
+    val[include] = imputer.transform(val[include])
+    test[include] = imputer.transform(test[include])
+
+    # log transform for highly skewed features
+    skewness = train[include].skew()
+    skewed_cols = skewness[skewness.abs() > config.skew_threshold].index.tolist()
+    
+    def _log_transform(x):
+        return np.sign(x) * np.log1p(np.abs(x))
+
+    train[skewed_cols] = train[skewed_cols].apply(_log_transform)
+    val[skewed_cols] = val[skewed_cols].apply(_log_transform)
+    test[skewed_cols] = test[skewed_cols].apply(_log_transform)
+
+    print(f"Applied log transform to {len(skewed_cols)} skewed features: ", *skewed_cols, sep='\n- ')
+
+    # winsorize to handle outliers
+    low = train[include].quantile(config.winsor_lower_q)
+    high = train[include].quantile(config.winsor_upper_q)
+    train[include] = train[include].clip(low, high, axis=1)
+    val[include] = val[include].clip(low, high, axis=1)
+    test[include] = test[include].clip(low, high, axis=1)
+
+    scaler.fit(train[include])
+    train[include] = scaler.transform(train[include])
+    val[include] = scaler.transform(val[include])
+    test[include] = scaler.transform(test[include])
+
+    return train, val, test
 
 def load_data(config : PreprocessConfig) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
     df = pd.read_parquet(config.input_path)
@@ -97,54 +143,30 @@ def load_data(config : PreprocessConfig) -> tuple[pd.DataFrame, pd.DataFrame, pd
     # transform non-numeric columns to numeric if possible, otherwise keep as is
     for column in df.select_dtypes(exclude=['number']).columns :
         def _cvt_item(x : None | object | str | pd.Timestamp) -> float | str | pd.Timestamp:
-            if x == None : return -config.invalid_val
+            if x == None : return config.invalid_val
             elif isinstance(x, str) or isinstance(x, pd.Timestamp) : return x
             else : return float(x)
         df[column] = df[column].apply(_cvt_item)
+    df.fillna(config.invalid_val, inplace=True)
+    return df
 
-    # select predictors
-    num_cols = df.select_dtypes(include=[np.number]).drop(columns=[config.target_col, config.id_col]).columns.tolist()
-    str_cols = df.select_dtypes(exclude=[np.number]).drop(columns=[config.date_col]).columns.tolist()
-    print(f"Selected columns: ", *num_cols, sep="\n- ")
+def get_xy(df : pd.DataFrame, config : PreprocessConfig) -> tuple[pd.DataFrame, pd.Series] :
+    X = df.drop(columns=[config.target_col, config.id_col, config.date_col])
+    y = df[config.target_col]
 
-    # split data set
-    train_df, valid_df, test_df = _split(df, config)
+    return X, y
 
-    # transform train_df and use the same transformation for valid_df and test_df
-    skewness = train_df[num_cols].skew(numeric_only=True)
-    log_cols = skewness[skewness.abs() >= config.skew_threshold].index.tolist()
-    print(f"Log-transforming {len(log_cols)} features with skewness above {config.skew_threshold}: ", *log_cols, sep="\n- ")
-    def log_transform(df: pd.DataFrame) -> pd.DataFrame:
-        output = df.copy()
-        for col in log_cols:
-            output[col] = np.sign(output[col]) * np.log1p(np.abs(output[col]))
-        return df
+def onehot(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, column : str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
+    ohe = OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore')
 
-    train_df, valid_df, test_df = log_transform(train_df), log_transform(valid_df), log_transform(test_df)
+    train_ohe = ohe.fit_transform(train[[column]])
+    val_ohe = ohe.transform(val[[column]])
+    test_ohe = ohe.transform(test[[column]])
 
-    # winsorize features
-    low = train_df[num_cols].quantile(config.winsor_lower_q)
-    high = train_df[num_cols].quantile(config.winsor_upper_q)
-    print(f"Winsorizing features to [{config.winsor_lower_q}, {config.winsor_upper_q}] quantiles: ", *num_cols, sep="\n- ")
-    def winsorize(df: pd.DataFrame) :
-        output = df.copy()
-        output[num_cols] = output[num_cols].clip(lower=low, upper=high, axis=1)
-        return output
-    
-    train_df, valid_df, test_df = winsorize(train_df), winsorize(valid_df), winsorize(test_df)
-    
-    scaler = StandardScaler()
-    train_df[num_cols] = scaler.fit_transform(train_df[num_cols])
-    valid_df[num_cols] = scaler.transform(valid_df[num_cols])
-    test_df[num_cols] = scaler.transform(test_df[num_cols])
+    idx = ohe.get_feature_names_out([column]).tolist()
 
-    # convert string columns to category dtype
-    for column in str_cols :
-        le = LabelEncoder()
-        train_df[column] = le.fit_transform(train_df[column])
-        valid_df[column] = le.transform(valid_df[column])
-        test_df[column] = le.transform(test_df[column])
+    train = pd.concat([train.drop(columns=[column]), pd.DataFrame(train_ohe, index=train.index, columns=idx)], axis=1)
+    val = pd.concat([val.drop(columns=[column]), pd.DataFrame(val_ohe, index=val.index, columns=idx)], axis=1)
+    test = pd.concat([test.drop(columns=[column]), pd.DataFrame(test_ohe, index=test.index, columns=idx)], axis=1)
 
-        print(f"Encoded column '{column}' with {len(le.classes_)} unique values: ", *le.classes_, sep="\n- ")
-
-    return train_df, valid_df, test_df
+    return train, val, test
