@@ -22,7 +22,8 @@ def main(data_path, solver : str = 'CLARABEL', penalization : str = 'asgl') :
     train_df, val_df, test_df = preprocess.transform(
         *preprocess.split(preprocess.load_data(cfg), cfg), 
         cfg,
-        exclude=['excntry'])
+        exclude=['excntry'],
+        skewed_cols=['me'])
     
     print(f"train: {len(train_df)} rows")
     print(f"val:   {len(val_df)} rows")
@@ -34,8 +35,8 @@ def main(data_path, solver : str = 'CLARABEL', penalization : str = 'asgl') :
 
     cormtx.plot_clustermap(cor_mtx, file_name=os.path.basename(data_path))
 
-    opt_lambdas = [1e-3, 1e-2, 1e-1, 1, 10, 100, 1000]
-    opt_num_cluster = np.arange(5, 11, 1)
+    opt_lambdas = [1e-3, 1e-2, 1e-1, 1, 10, 100, 1000, 1e4]
+    opt_num_cluster = np.arange(5, 8, 1)
 
     logger = tqdm(total=len(opt_lambdas) * len(opt_num_cluster), desc="Tuning AGL")
 

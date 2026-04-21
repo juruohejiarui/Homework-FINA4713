@@ -93,7 +93,8 @@ def split(df: pd.DataFrame, config: PreprocessConfig):
 
 def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, config : PreprocessConfig,
     include : list[str] | None = None,
-    exclude : list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
+    exclude : list[str] | None = None,
+    skewed_cols : list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
     if include is None :
         if exclude is None :
             include = [col for col in train.columns if col not in [config.id_col, config.date_col, config.target_col]]
@@ -110,8 +111,9 @@ def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, con
     test[include] = imputer.transform(test[include])
 
     # log transform for highly skewed features
-    skewness = train[include].skew()
-    skewed_cols = skewness[skewness.abs() > config.skew_threshold].index.tolist()
+    if skewed_cols == None :
+        skewness = train[include].skew()
+        skewed_cols = skewness[skewness.abs() > config.skew_threshold].index.tolist()
     
     def _log_transform(x):
         return np.sign(x) * np.log1p(np.abs(x))
