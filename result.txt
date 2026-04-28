@@ -1,0 +1,929 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1777383858.483082    6511 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1777383858.719461    6511 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1777383859.513765    6511 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Imported lazytransform v1.18. 
+
+Imported featurewiz 0.6.1. Use the following syntax:
+    >>> wiz = FeatureWiz(feature_engg = '', nrows=None, transform_target=True,
+                        category_encoders="auto", auto_encoders='VAE', ae_options={},
+                        add_missing=False, imbalanced=False, verbose=0)
+    >>> X_train_selected, y_train = wiz.fit_transform(X_train, y_train)
+    >>> X_test_selected = wiz.transform(X_test)
+    >>> selected_features = wiz.features
+    
+Data Range: 2005-01 ~ 2024-11
+  0%|                                                                                                                           | 0/17 [00:00<?, ?it/s]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (278062, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (278062, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (278062, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 48 second(s)
+Recursive XGBoost selected 24 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (140855, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (140855, 51)
+Returning dataframe with 24 features 
+Select 24 features: 
+        - me
+        - ope_be
+        - niq_be
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - ret_60_12
+        - seas_1_1an
+        - beta_60m
+        - ivol_capm_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2005-01 ~    2007-01:                                                                                                                               
+all: r2:     -0.03699 ann_ret:        9.37% sharpe:       3.2406                                                                                       
+sel: r2:     -0.03036 ann_ret:        7.58% sharpe:       2.6860                                                                                       
+  6%|██████▋                                                                                                           | 1/17 [02:22<37:58, 142.43s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (283250, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (283250, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (283250, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 45 second(s)
+Recursive XGBoost selected 25 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (151287, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (151287, 51)
+Returning dataframe with 25 features 
+Select 21 features: 
+        - me
+        - niq_be
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - beta_60m
+        - ivol_capm_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2006-01 ~    2008-01:                                                                                                                               
+all: r2:     -0.08432 ann_ret:        5.18% sharpe:       3.1871                                                                                       
+sel: r2:     -0.09621 ann_ret:        5.35% sharpe:       2.9493                                                                                       
+ 12%|█████████████▍                                                                                                    | 2/17 [04:41<35:05, 140.35s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (292142, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (292142, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (292142, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 45 features selected
+Performing recursive XGBoost feature selection from 45 features...
+    time taken to run entire featurewiz = 48 second(s)
+Recursive XGBoost selected 22 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (152164, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (152164, 51)
+Returning dataframe with 22 features 
+Select 16 features: 
+        - me
+        - niq_be
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - beta_60m
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2007-01 ~    2009-01:                                                                                                                               
+all: r2:     -0.08714 ann_ret:       -8.56% sharpe:      -1.4362                                                                                       
+sel: r2:     -0.09770 ann_ret:      -11.41% sharpe:      -1.9439                                                                                       
+ 18%|████████████████████                                                                                              | 3/17 [07:01<32:42, 140.20s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (303451, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (303451, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (303451, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 45 features selected
+Performing recursive XGBoost feature selection from 45 features...
+    time taken to run entire featurewiz = 51 second(s)
+Recursive XGBoost selected 23 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (145742, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (145742, 51)
+Returning dataframe with 23 features 
+Select 15 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - beta_60m
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2008-01 ~    2010-01:                                                                                                                               
+all: r2:     -0.04539 ann_ret:        7.68% sharpe:       2.5912                                                                                       
+sel: r2:     -0.04746 ann_ret:        8.46% sharpe:       2.6035                                                                                       
+ 24%|██████████████████████████▊                                                                                       | 4/17 [09:27<30:50, 142.37s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (297906, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (297906, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (297906, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 49 second(s)
+Recursive XGBoost selected 27 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (143980, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (143980, 51)
+Returning dataframe with 27 features 
+Select 14 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - beta_60m
+        - turnover_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2009-01 ~    2011-01:                                                                                                                               
+all: r2:     -0.12624 ann_ret:        7.32% sharpe:       1.8256                                                                                       
+sel: r2:     -0.25265 ann_ret:        3.75% sharpe:       1.1415                                                                                       
+ 29%|█████████████████████████████████▌                                                                                | 5/17 [11:52<28:40, 143.34s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (289722, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (289722, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (289722, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 48 second(s)
+Recursive XGBoost selected 22 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (141488, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (141488, 51)
+Returning dataframe with 22 features 
+Select 17 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rmax5_rvol_21d
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2010-01 ~    2012-01:                                                                                                                               
+all: r2:     -0.25841 ann_ret:        1.27% sharpe:       0.6694                                                                                       
+sel: r2:     -0.07674 ann_ret:        4.12% sharpe:       3.5365                                                                                       
+ 35%|████████████████████████████████████████▏                                                                         | 6/17 [14:12<26:05, 142.32s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (285468, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (285468, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (285468, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 48 second(s)
+Recursive XGBoost selected 22 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (136585, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (136585, 51)
+Returning dataframe with 22 features 
+Select 17 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rmax5_rvol_21d
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2011-01 ~    2013-01:                                                                                                                               
+all: r2:     -0.04425 ann_ret:        6.02% sharpe:       3.8859                                                                                       
+sel: r2:     -0.05368 ann_ret:        5.74% sharpe:       3.2341                                                                                       
+ 41%|██████████████████████████████████████████████▉                                                                   | 7/17 [16:33<23:40, 142.05s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (278073, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (278073, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (278073, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 48 second(s)
+Recursive XGBoost selected 26 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (135260, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (135260, 51)
+Returning dataframe with 26 features 
+Select 17 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rmax5_rvol_21d
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2012-01 ~    2014-01:                                                                                                                               
+all: r2:     -0.01160 ann_ret:        5.19% sharpe:       1.7561                                                                                       
+sel: r2:     -0.01258 ann_ret:        3.59% sharpe:       1.5072                                                                                       
+ 47%|█████████████████████████████████████████████████████▋                                                            | 8/17 [18:56<21:21, 142.36s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (271845, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (271845, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (271845, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 48 second(s)
+Recursive XGBoost selected 27 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (145503, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (145503, 51)
+Returning dataframe with 27 features 
+Select 16 features: 
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rmax5_rvol_21d
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2013-01 ~    2015-01:                                                                                                                               
+all: r2:     -0.41520 ann_ret:       10.15% sharpe:       2.8147                                                                                       
+sel: r2:     -0.39961 ann_ret:        7.72% sharpe:       2.3745                                                                                       
+ 53%|████████████████████████████████████████████████████████████▎                                                     | 9/17 [21:14<18:47, 140.90s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (280763, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (280763, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (280763, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 37 second(s)
+Recursive XGBoost selected 26 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (149970, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (149970, 51)
+Returning dataframe with 26 features 
+Select 16 features: 
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rmax5_rvol_21d
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2014-01 ~    2016-01:                                                                                                                               
+all: r2:     -0.46781 ann_ret:        1.47% sharpe:       0.5009                                                                                       
+sel: r2:     -0.20081 ann_ret:        1.07% sharpe:       0.3634                                                                                       
+ 59%|██████████████████████████████████████████████████████████████████▍                                              | 10/17 [23:26<16:06, 138.04s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (295473, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (295473, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (295473, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 49 second(s)
+Recursive XGBoost selected 25 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (153513, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (153513, 51)
+Returning dataframe with 25 features 
+Select 20 features: 
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2015-01 ~    2017-01:                                                                                                                               
+all: r2:     -0.05386 ann_ret:        5.27% sharpe:       4.2199                                                                                       
+sel: r2:     -0.04943 ann_ret:        4.23% sharpe:       2.9357                                                                                       
+ 65%|█████████████████████████████████████████████████████████████████████████                                        | 11/17 [25:51<14:00, 140.15s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (303483, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (303483, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (303483, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 46 second(s)
+Recursive XGBoost selected 26 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (154727, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (154727, 51)
+Returning dataframe with 26 features 
+Select 20 features: 
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2016-01 ~    2018-01:                                                                                                                               
+all: r2:     -0.07288 ann_ret:        0.96% sharpe:       0.3369                                                                                       
+sel: r2:     -0.08181 ann_ret:        0.20% sharpe:       0.0638                                                                                       
+ 71%|███████████████████████████████████████████████████████████████████████████████▊                                 | 12/17 [28:12<11:42, 140.41s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (308240, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (308240, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (308240, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 49 second(s)
+Recursive XGBoost selected 22 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (159831, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (159831, 51)
+Returning dataframe with 22 features 
+Select 20 features: 
+        - ret_1_0
+        - ret_6_1
+        - ret_12_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2017-01 ~    2019-01:                                                                                                                               
+all: r2:     -0.08709 ann_ret:        6.61% sharpe:       4.0534                                                                                       
+sel: r2:     -0.08602 ann_ret:        5.92% sharpe:       3.3926                                                                                       
+ 76%|██████████████████████████████████████████████████████████████████████████████████████▍                          | 13/17 [30:35<09:24, 141.20s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (314558, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (314558, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (314558, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 50 second(s)
+Recursive XGBoost selected 27 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (168255, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (168255, 51)
+Returning dataframe with 27 features 
+Select 19 features: 
+        - ret_1_0
+        - ret_6_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2018-01 ~    2020-01:                                                                                                                               
+all: r2:     -0.05858 ann_ret:        4.98% sharpe:       0.9785                                                                                       
+sel: r2:     -0.05268 ann_ret:        2.47% sharpe:       0.5628                                                                                       
+ 82%|█████████████████████████████████████████████████████████████████████████████████████████████                    | 14/17 [33:02<07:09, 143.03s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (328086, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (328086, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (328086, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 50 second(s)
+Recursive XGBoost selected 25 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (150624, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (150624, 51)
+Returning dataframe with 25 features 
+Select 19 features: 
+        - ret_1_0
+        - ret_6_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2019-01 ~    2021-01:                                                                                                                               
+all: r2:     -0.13465 ann_ret:       -1.71% sharpe:      -0.3364                                                                                       
+sel: r2:     -0.12031 ann_ret:       -2.19% sharpe:      -0.4496                                                                                       
+ 88%|███████████████████████████████████████████████████████████████████████████████████████████████████▋             | 15/17 [35:28<04:47, 143.89s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (318879, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (318879, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (318879, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 51 second(s)
+Recursive XGBoost selected 27 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (162275, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (162275, 51)
+Returning dataframe with 27 features 
+Select 20 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2020-01 ~    2022-01:                                                                                                                               
+all: r2:     -0.11764 ann_ret:        2.70% sharpe:       1.0436                                                                                       
+sel: r2:     -0.12014 ann_ret:        0.90% sharpe:       0.2974                                                                                       
+ 94%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▎      | 16/17 [37:57<02:25, 145.47s/it]featurewiz is given 0.8 as correlation limit...
+    Skipping feature engineering since no feature_engg input...
+    final list of category encoders given: ['label', 'label']
+    final list of scalers given: []
+Loaded input data. Shape = (312899, 51)
+#### Starting featurewiz transform for train data ####
+    Single_Label Regression problem 
+Shape of dataset: (312899, 51). Now we classify variables into different types...
+Time taken to define data pipeline = 1 second(s)
+No model input given...
+Lazy Transformer Pipeline created...
+    Time taken to fit dataset = 1 second(s)
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (312899, 51)
+    Single_Label Regression problem 
+Starting SULOV with 51 features...
+    there are no null values in dataset...
+    there are no null values in target column...
+Completed SULOV. 46 features selected
+Performing recursive XGBoost feature selection from 46 features...
+    time taken to run entire featurewiz = 50 second(s)
+Recursive XGBoost selected 24 features...
+#### Starting featurewiz transform for test data ####
+Loaded input data. Shape = (176725, 51)
+#### Starting lazytransform for test data ####
+    Time taken to transform dataset = 1 second(s)
+    Shape of transformed dataset: (176725, 51)
+Returning dataframe with 24 features 
+Select 20 features: 
+        - me
+        - ret_1_0
+        - ret_6_1
+        - seas_1_1an
+        - beta_60m
+        - rvol_21d
+        - rmax5_rvol_21d
+        - dolvol
+        - turnover_126d
+        - ami_126d
+        - bidaskhl_21d
+        - oaccruals_at
+        - taccruals_at
+        - cash_at
+        - eqnpo_12m
+        - netis_at
+        - age
+        - at_me
+        - niq_su
+        - mispricing_mgmt
+   2021-01 ~    2023-01:                                                                                                                               
+all: r2:     -0.09897 ann_ret:        3.31% sharpe:       1.5274                                                                                       
+sel: r2:     -0.08629 ann_ret:        2.19% sharpe:       0.8030                                                                                       
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 17/17 [40:23<00:00, 142.57s/it]
+id                 0.000000
+eom                0.000000
+excntry            0.000000
+ret_exc_lead1m     0.000000
+me                 0.823529
+be_me              0.176471
+sale_me            0.117647
+ni_me              0.058824
+ocf_me             0.117647
+fcf_me             0.000000
+ebitda_mev         0.000000
+div12m_me          0.000000
+gp_at              0.117647
+ope_be             0.529412
+cop_at             0.235294
+ocf_at             0.235294
+op_at              0.235294
+niq_be             0.588235
+ret_1_0            1.000000
+ret_6_1            0.882353
+ret_12_1           0.705882
+ret_60_12          0.411765
+resff3_12_1        0.411765
+seas_1_1an         0.941176
+at_gr1             0.529412
+sale_gr1           0.235294
+capx_gr1           0.000000
+inv_gr1            0.058824
+noa_gr1a           0.000000
+emp_gr1            0.235294
+beta_60m           0.823529
+ivol_capm_21d      0.117647
+ivol_ff3_21d       0.000000
+rvol_21d           0.882353
+rmax1_21d          0.000000
+rmax5_21d          0.000000
+rmax5_rvol_21d     0.941176
+dolvol             0.882353
+turnover_126d      1.000000
+ami_126d           0.941176
+bidaskhl_21d       1.000000
+qmj                0.235294
+f_score            0.000000
+o_score            0.176471
+z_score            0.294118
+oaccruals_at       0.882353
+taccruals_at       0.882353
+cash_at            1.000000
+chcsho_12m         0.000000
+eqnpo_12m          1.000000
+netis_at           1.000000
+age                1.000000
+at_me              1.000000
+niq_su             1.000000
+mispricing_mgmt    1.000000
+dtype: float64

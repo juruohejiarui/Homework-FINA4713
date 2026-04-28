@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import numpy as np
 import pandas as pd
 
-class PreprocessConfig:
+class Config:
     input_path: Path
     output_root: Path
     skewed_cols : list[str] | str | None = None
@@ -64,10 +64,9 @@ class PreprocessConfig:
     def load_json(path: Path) -> Self :
         with open(path, "r") as f:
             data = json.load(f)
-        return PreprocessConfig(**data)
+        return Config(**data)
 
-def split(df: pd.DataFrame, config: PreprocessConfig):
-    df[config.date_col] = pd.to_datetime(df[config.date_col])
+def split(df: pd.DataFrame, config: Config):
     train_df = df[df[config.date_col] <= config.train_end]
     valid_df = df[(df[config.date_col] > config.train_end) & (df[config.date_col] <= config.valid_end)]
     test_df = df[df[config.date_col] > config.valid_end]
@@ -90,9 +89,10 @@ def onehot(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, column
 
     return train, val, test
 
-def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, config : PreprocessConfig,
+def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, config : Config,
     include : list[str] | None = None,
-    exclude : list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
+    exclude : list[str] | None = None,
+    log : bool = True) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
     
     if include is None :
         if exclude is None :
@@ -119,23 +119,25 @@ def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, con
     def _log_transform(x):
         return np.sign(x) * np.log1p(np.abs(x))
 
-    print(f"Applied log transform to {len(skewed_cols)} skewed features: ", 
+    if log :
+        print(f"Applied log transform to {len(skewed_cols)} skewed features: ", 
           *[f"- {col}: {train[col].skew()}" for col in skewed_cols], sep='\n')
 
     # plot top 10 (abs) skewed features before and after log transform
-    plt.figure(figsize=(12, 5))
-    plt.subplot(1, 2, 1)
-    skewness_before = train[include].skew().abs().sort_values(ascending=False)
-    skewness_before.head(10).plot(kind='bar')
-    plt.title('Top 10 (abs) Skewed Features Before Log Transform')
-    plt.ylabel('Absolute Skewness')
-    plt.subplot(1, 2, 2)
-    skewness_after = train[include].apply(_log_transform).skew().abs().sort_values(ascending=False)
-    skewness_after.head(10).plot(kind='bar')
-    plt.title('Top 10 (abs) Skewed Features After Log Transform')
-    plt.ylabel('Absolute Skewness')
-    plt.tight_layout()
-    plt.show()
+    if log :
+        plt.figure(figsize=(12, 5))
+        plt.subplot(1, 2, 1)
+        skewness_before = train[include].skew().abs().sort_values(ascending=False)
+        skewness_before.head(10).plot(kind='bar')
+        plt.title('Top 10 (abs) Skewed Features Before Log Transform')
+        plt.ylabel('Absolute Skewness')
+        plt.subplot(1, 2, 2)
+        skewness_after = train[include].apply(_log_transform).skew().abs().sort_values(ascending=False)
+        skewness_after.head(10).plot(kind='bar')
+        plt.title('Top 10 (abs) Skewed Features After Log Transform')
+        plt.ylabel('Absolute Skewness')
+        plt.tight_layout()
+        plt.show()
 
     train[skewed_cols] = train[skewed_cols].apply(_log_transform)
     val[skewed_cols] = val[skewed_cols].apply(_log_transform)
@@ -158,13 +160,14 @@ def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, con
 
     return train, val, test
 
-def load_data(config : PreprocessConfig) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
+def load_data(config : Config) -> pd.DataFrame :
     df = pd.read_parquet(config.input_path)
     # remove data with missing target
     df = df[df[config.target_col].notna()].copy()
+    df[config.date_col] = pd.to_datetime(df[config.date_col])
     return df
 
-def get_xy(df : pd.DataFrame, config : PreprocessConfig, excludes : list[str] = []) -> tuple[pd.DataFrame, pd.Series] :
+def get_xy(df : pd.DataFrame, config : Config, excludes : list[str] = []) -> tuple[pd.DataFrame, pd.Series] :
     X = df.drop(columns=[config.target_col, config.id_col, config.date_col, *excludes])
     y = df[config.target_col]
 
