@@ -94,6 +94,10 @@ def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, con
     exclude : list[str] | None = None,
     log : bool = True) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] :
     
+    train = train.copy()
+    val = val.copy()
+    test = test.copy()
+
     if include is None :
         if exclude is None :
             include = [col for col in train.columns if col not in [config.id_col, config.date_col, config.target_col]]
@@ -139,21 +143,21 @@ def transform(train : pd.DataFrame, val : pd.DataFrame, test : pd.DataFrame, con
         plt.tight_layout()
         plt.show()
 
-    train[skewed_cols] = train[skewed_cols].apply(_log_transform)
-    val[skewed_cols] = val[skewed_cols].apply(_log_transform)
-    test[skewed_cols] = test[skewed_cols].apply(_log_transform)
+    train.loc[:, skewed_cols] = train[skewed_cols].apply(_log_transform)
+    val.loc[:, skewed_cols] = val[skewed_cols].apply(_log_transform)
+    test.loc[:, skewed_cols] = test[skewed_cols].apply(_log_transform)
 
     # winsorize to handle outliers
     low = train[include].quantile(config.winsor_lower_q)
     high = train[include].quantile(config.winsor_upper_q)
-    train[include] = train[include].clip(low, high, axis=1)
-    val[include] = val[include].clip(low, high, axis=1)
-    test[include] = test[include].clip(low, high, axis=1)
+    train.loc[:, include] = train[include].clip(low, high, axis=1)
+    val.loc[:, include] = val[include].clip(low, high, axis=1)
+    test.loc[:, include] = test[include].clip(low, high, axis=1)
 
     scaler.fit(train[include])
-    train[include] = scaler.transform(train[include])
-    val[include] = scaler.transform(val[include])
-    test[include] = scaler.transform(test[include])
+    train.loc[:, include] = scaler.transform(train[include])
+    val.loc[:, include] = scaler.transform(val[include])
+    test.loc[:, include] = scaler.transform(test[include])
 
     # transform onehot columns
     train, val, test = onehot(train, val, test, config.onehot_cols)
