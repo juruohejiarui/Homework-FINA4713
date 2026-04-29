@@ -1,0 +1,9 @@
+# 滚动窗口 + FeatureWiz 特征稳定性分析
+# 若 pip 安装 featurewiz 时拉取源码编 numpy 失败，可尝试: conda install -c conda-forge featurewiz xgboost
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+matplotlib>=3.7
+tqdm>=4.65
+featurewiz>=0.5.0
+xgboost>=2.0.0
