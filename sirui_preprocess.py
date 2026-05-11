@@ -5,6 +5,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
 
 
 TRAIN_START = "2005-01-01"
@@ -22,7 +24,7 @@ class PreprocessConfig:
     target_col: str = "ret_exc_lead1m"
     date_col: str = "eom"
     id_col: str = "id"
-    skew_threshold: float = 1.0
+    skew_threshold: float = 10.0
     winsor_lower_q: float = 0.01
     winsor_upper_q: float = 0.99
 
@@ -42,7 +44,7 @@ def parse_args() -> PreprocessConfig:
     parser.add_argument("--target_col", type=str, default="ret_exc_lead1m")
     parser.add_argument("--date_col", type=str, default="eom")
     parser.add_argument("--id_col", type=str, default="id")
-    parser.add_argument("--skew_threshold", type=float, default=1.0)
+    parser.add_argument("--skew_threshold", type=float, default=10.0)
     parser.add_argument("--winsor_lower_q", type=float, default=0.01)
     parser.add_argument("--winsor_upper_q", type=float, default=0.99)
     args = parser.parse_args()
@@ -85,12 +87,17 @@ def fit_preprocess_params(
     winsor_lower_q: float,
     winsor_upper_q: float,
 ) -> dict:
+    """与仓库根目录 preprocess.transform 一致：median → log(高偏列) → winsorize → StandardScaler。"""
     train_x = train_df[predictors].copy()
 
-    skewness = train_x.skew(numeric_only=True)
-    log_cols = skewness[skewness.abs() >= skew_threshold].index.tolist()
+    imputer = SimpleImputer(strategy="median")
+    imputed_train = imputer.fit_transform(train_x)
+    imputed_df = pd.DataFrame(imputed_train, columns=predictors, index=train_x.index)
 
-    transformed = train_x.copy()
+    skewness = imputed_df.skew(numeric_only=True)
+    log_cols = skewness[skewness.abs() > skew_threshold].index.tolist()
+
+    transformed = imputed_df.copy()
     for col in log_cols:
         transformed[col] = np.sign(transformed[col]) * np.log1p(np.abs(transformed[col]))
 
@@ -98,20 +105,19 @@ def fit_preprocess_params(
     upper = transformed.quantile(winsor_upper_q)
     winsorized = transformed.clip(lower=lower, upper=upper, axis=1)
 
-    medians = winsorized.median()
-    imputed = winsorized.fillna(medians)
+    scaler = StandardScaler()
+    scaler.fit(winsorized)
 
-    means = imputed.mean()
-    stds = imputed.std(ddof=0).replace(0, 1.0)
+    impute_median = pd.Series(imputer.statistics_, index=predictors)
 
     params = {
         "predictors": predictors,
         "log_cols": log_cols,
         "winsor_lower": lower.to_dict(),
         "winsor_upper": upper.to_dict(),
-        "impute_median": medians.to_dict(),
-        "scale_mean": means.to_dict(),
-        "scale_std": stds.to_dict(),
+        "impute_median": impute_median.to_dict(),
+        "scale_mean": pd.Series(scaler.mean_, index=predictors).to_dict(),
+        "scale_std": pd.Series(scaler.scale_, index=predictors).to_dict(),
     }
     return params
 
@@ -121,15 +127,15 @@ def apply_preprocess(df: pd.DataFrame, params: dict, date_col: str, id_col: str,
     predictors = params["predictors"]
     x = out[predictors].copy()
 
+    medians = pd.Series(params["impute_median"])
+    x = x.fillna(medians)
+
     for col in params["log_cols"]:
         x[col] = np.sign(x[col]) * np.log1p(np.abs(x[col]))
 
     lower = pd.Series(params["winsor_lower"])
     upper = pd.Series(params["winsor_upper"])
     x = x.clip(lower=lower, upper=upper, axis=1)
-
-    medians = pd.Series(params["impute_median"])
-    x = x.fillna(medians)
 
     means = pd.Series(params["scale_mean"])
     stds = pd.Series(params["scale_std"]).replace(0, 1.0)

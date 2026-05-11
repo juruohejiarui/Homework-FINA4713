@@ -6,8 +6,8 @@ def calc_y_null(y_tr : np.ndarray | pd.DataFrame, y_te : np.ndarray | pd.DataFra
 	hist_avg = y_tr.mean()
 	return np.full(len(y_te), hist_avg)
 
-def oos_r2(y_true, y_pred, y_null) -> np.ndarray :
-	return 1 - np.mean((y_true - y_pred) ** 2) / np.mean((y_true - y_null) ** 2)
+def oos_r2(y_true, y_pred, y_null) -> float :
+	return float(1 - np.mean((y_true - y_pred) ** 2) / np.mean((y_true - y_null) ** 2))
 
 def portfolio_weights(pred, max_w = 0.05) :
 	n = len(pred)
